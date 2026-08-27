@@ -1,0 +1,9 @@
+.git
+.env
+.env.example.env.prod
+docker-compose*.yml
+*.md
+var/
+public/fileadmin/
+public/uploads/
+public/typo3temp/

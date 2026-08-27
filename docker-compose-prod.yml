@@ -1,0 +1,50 @@
+services:
+  typo3:
+    image: my-typo3-site:latest
+    restart: unless-stopped
+    ports:
+      - "${TYPO3_PORT:-8080}:80"
+    environment:
+      TYPO3_DB_DRIVER: mysqli
+      TYPO3_DB_HOST: db
+      TYPO3_DB_PORT: 3306
+      TYPO3_DB_NAME: ${DB_NAME:-typo3}
+      TYPO3_DB_USERNAME: ${DB_USER:-typo3}
+      TYPO3_DB_PASSWORD: ${DB_PASSWORD}
+      TYPO3_ENCRYPTION_KEY: ${TYPO3_ENCRYPTION_KEY}
+      TYPO3_SERVER_TYPE: apache
+      # Auto-setup on first boot — handled by docker-entrypoint.sh
+      TYPO3_SETUP_ADMIN_USERNAME: ${ADMIN_USER:-admin}
+      TYPO3_SETUP_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TYPO3_SETUP_ADMIN_EMAIL: ${ADMIN_EMAIL}
+      TYPO3_SITE_URL: ${TYPO3_SITE_URL:-http://localhost/}
+    volumes:
+      - typo3_var:/var/www/html/var
+      - typo3_fileadmin:/var/www/html/public/fileadmin
+      - typo3_uploads:/var/www/html/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: ${MARIADB_IMAGE:-mariadb:11}
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME:-typo3}
+      MARIADB_USER: ${DB_USER:-typo3}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  db_data:
+  typo3_var:
+  typo3_fileadmin:
+  typo3_uploads:
