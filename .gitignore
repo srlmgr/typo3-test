@@ -6,5 +6,6 @@ nbproject
 /vendor
 /public/*
 !/public/.htaccess
+tmp
 .env
 .env.prod

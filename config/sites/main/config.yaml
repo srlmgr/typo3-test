@@ -1,11 +1,11 @@
-base: 'http://localhost:8380/'
+base: "http://localhost:8380/"
 dependencies:
   - typo3/fluid-styled-content
   - typo3/fluid-styled-content-css
-errorHandling: {  }
+  - myvendor/site-package
+
 languages:
-  -
-    title: English
+  - title: English
     enabled: true
     languageId: 0
     base: /
@@ -13,4 +13,3 @@ languages:
     navigationTitle: English
     flag: us
 rootPageId: 1
-routes: {  }

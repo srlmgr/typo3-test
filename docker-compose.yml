@@ -18,6 +18,7 @@ services:
       TYPO3_SETUP_ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       TYPO3_SETUP_ADMIN_USERNAME: ${ADMIN_USER:-admin}
       TYPO3_SETUP_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TYPO3_SITE_NAME: ${TYPO3_PROJECT_NAME:-My TYPO3 Site}
       TYPO3_SETUP_CREATE_SITE: "true"
       TYPO3_SERVER_TYPE: apache
       TYPO3_ENCRYPTION_KEY: ${TYPO3_ENCRYPTION_KEY}
@@ -52,6 +53,9 @@ services:
       args:
         PHP_IMAGE: ${PHP_IMAGE:-php:8.4-apache}
         COMPOSER_IMAGE: ${COMPOSER_IMAGE:-composer:2}
+    environment:
+      HOST_UID: "${HOST_UID}"
+      HOST_GID: "${HOST_GID}"
     volumes:
       - .:/var/www/html
     entrypoint: composer

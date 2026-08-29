@@ -1,0 +1,17 @@
+<f:layout name="Default" />
+
+<f:section name="Main">
+  <!-- Render external app HTML if available on the vrdb page -->
+  <f:if condition="{externalHtml}">
+    <f:then>
+      <div class="vrdb-container">
+        <f:format.raw>{externalHtml}</f:format.raw>
+      </div>
+    </f:then>
+    <f:else>
+      <!-- Standard Content Elements from colPos=0 on all other pages -->
+      <div>Fallback in default.html</div>
+      <f:cObject typoscriptObjectPath="lib.content" />
+    </f:else>
+  </f:if>
+</f:section>

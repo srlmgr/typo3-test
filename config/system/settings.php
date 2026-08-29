@@ -1,4 +1,5 @@
 <?php
+use TYPO3\CMS\Core\Core\Environment;
 return [
     'BE' => [
         'debug' => false,
@@ -40,6 +41,17 @@ return [
                                 'disabled' => true,
                             ],
                         ],
+                    ],
+                ],
+            ],
+        ],
+        'MyVendor' => [
+            'writerConfiguration' => [
+                'debug' => [
+                    'TYPO3\CMS\Core\Log\Writer\FileWriter' => [
+                        'disabled' => false,
+                        'logFile' =>  Environment::getVarPath() . '/log/myvendor.log',
+
                     ],
                 ],
             ],

@@ -1,0 +1,76 @@
+page = PAGE
+
+page {
+    10 = FLUIDTEMPLATE
+
+    10 {
+        templateRootPaths {
+            10 = EXT:site_package/Resources/Private/Templates/
+        }
+
+        layoutRootPaths {
+            10 = EXT:site_package/Resources/Private/Layouts/
+        }
+
+        partialRootPaths {
+            10 = EXT:site_package/Resources/Private/Partials/
+        }
+
+        templateName = TEXT
+        templateName {
+            stdWrap.cObject = CASE
+            stdWrap.cObject {
+                key.data = levelfield:-1, backend_layout, backend_layout_next_level, slide
+
+                default = TEXT
+                default.value = Page/Default
+
+                pagets__vrdb = TEXT
+                pagets__vrdb.value = Page/Vrdb
+            }
+        }
+
+        dataProcessing {
+            10 = TYPO3\CMS\Frontend\DataProcessing\MenuProcessor
+
+            10 {
+                levels = 1
+                includeSpacer = 0
+                as = mainMenu
+            }
+        }
+
+    }
+
+    includeCSS {
+        site = EXT:site_package/Resources/Public/Css/site.css
+    }
+}
+
+lib.content = CONTENT
+lib.content {
+    table = tt_content
+
+    select {
+        orderBy = sorting
+        where = {#colPos}=0
+    }
+}
+
+tt_content.vrdb_fetcher = FLUIDTEMPLATE
+tt_content.vrdb_fetcher {
+    templateName = ExternalApp
+    templateRootPaths {
+        10 = EXT:site_package/Resources/Private/Templates/ContentObjects/
+    }
+    dataProcessing {
+        10 = MyVendor\SitePackage\DataProcessing\ExternalAppProcessor
+        10.endpoint = https://vrdb-http.ubtest3.homelab.mpapenbr.de
+    }
+}
+
+
+
+[traverse(page, "uid") in [7, 8, 10]]
+    config.no_cache = 1
+[END]

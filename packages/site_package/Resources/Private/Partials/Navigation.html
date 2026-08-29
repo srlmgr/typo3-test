@@ -1,0 +1,9 @@
+<nav>
+  <ul>
+    <f:for each="{mainMenu}" as="menuItem">
+      <li class="{f:if(condition: menuItem.active, then: 'active')}">
+        <a href="{menuItem.link}"> {menuItem.title} </a>
+      </li>
+    </f:for>
+  </ul>
+</nav>
