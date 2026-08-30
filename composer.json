@@ -51,13 +51,5 @@
             "web-dir": "public",
             "cms-package-dir": "{$vendor-dir}/typo3/cms"
         }
-    },
-    "scripts": {
-        "typo3-cms-scripts": [
-            "typo3/cms-composer-installers:prepare-web-dir"
-        ],
-        "post-autoload-dump": [
-            "@typo3-cms-scripts"
-        ]
     }
 }

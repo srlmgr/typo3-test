@@ -54,7 +54,10 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
 
     private function buildExternalRequestConfiguration(ContentObjectRenderer $cObj, array $processorConfiguration): array
     {
-        $externalBase = rtrim($processorConfiguration['endpoint'] ?? 'https://vrdb-http.ubtest3.homelab.mpapenbr.de', '/');
+        $externalBase = rtrim(
+            (string) $cObj->stdWrapValue('endpoint', $processorConfiguration, 'https://vrdb-http.ubtest3.homelab.mpapenbr.de'),
+            '/'
+        );
 
         $requestUri = GeneralUtility::getIndpEnv('REQUEST_URI');
         $parts = parse_url($requestUri ?: '/');
@@ -63,7 +66,7 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
         $query = $parts['query'] ?? '';
         $this->debug('Building external URL for path: ' . $path . ' and query: ' . $query . ' with ' . json_encode($processorConfiguration));
 
-        $basePath = $processorConfiguration['basePath'] ?? $cObj->data['tx_sitepackage_external_base_path'] ?? '/vrdb';
+        $basePath = (string) $cObj->stdWrapValue('basePath', $processorConfiguration, '/vrdb');
         $suffix = $path;
 
         if (str_starts_with($path, $basePath)) {
@@ -76,9 +79,15 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
 
         $url = $externalBase . self::EXTERNAL_SNIPPET_PATH;
 
+        $seasonId = (string) $cObj->stdWrapValue('seasonID', $processorConfiguration, '');
+
         parse_str($query, $queryParameters);
-        if (!array_key_exists('seasonID', $queryParameters) && array_key_exists($suffix, self::PATH_SEASON_ID_MAP)) {
-            $queryParameters['seasonID'] = self::PATH_SEASON_ID_MAP[$suffix];
+        if (!array_key_exists('seasonID', $queryParameters)) {
+            if ($seasonId !== '') {
+                $queryParameters['seasonID'] = $seasonId;
+            } elseif (array_key_exists($suffix, self::PATH_SEASON_ID_MAP)) {
+                $queryParameters['seasonID'] = self::PATH_SEASON_ID_MAP[$suffix];
+            }
         }
 
         $normalizedQuery = http_build_query($queryParameters);

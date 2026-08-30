@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-08-30T00:00:00Z"
+        product-name="site_package">
+        <header />
+        <body>
+            <trans-unit id="pages.tab.external_app">
+                <source>External App</source>
+            </trans-unit>
+            <trans-unit id="pages.palette.external_app">
+                <source>External App Settings</source>
+            </trans-unit>
+            <trans-unit id="pages.tx_sitepackage_external_endpoint">
+                <source>External endpoint</source>
+            </trans-unit>
+            <trans-unit id="pages.tx_sitepackage_external_base_path">
+                <source>External CMS base path</source>
+            </trans-unit>
+            <trans-unit id="pages.tx_sitepackage_external_season_id">
+                <source>Season ID</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

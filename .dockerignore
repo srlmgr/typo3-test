@@ -7,4 +7,5 @@ var/
 public/fileadmin/
 public/uploads/
 public/typo3temp/
+# vendor/
 tmp/

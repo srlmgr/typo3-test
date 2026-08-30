@@ -65,7 +65,15 @@ tt_content.vrdb_fetcher {
     }
     dataProcessing {
         10 = MyVendor\SitePackage\DataProcessing\ExternalAppProcessor
-        10.endpoint = https://vrdb-http.ubtest3.homelab.mpapenbr.de
+        10 {
+            endpoint.data = page:tx_sitepackage_external_endpoint
+            endpoint.ifEmpty = https://vrdb-http.ubtest3.homelab.mpapenbr.de
+
+            basePath.data = page:tx_sitepackage_external_base_path
+            basePath.ifEmpty = /vrdb
+
+            seasonID.data = page:tx_sitepackage_external_season_id
+        }
     }
 }
 

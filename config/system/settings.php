@@ -1,5 +1,4 @@
 <?php
-use TYPO3\CMS\Core\Core\Environment;
 return [
     'BE' => [
         'debug' => false,
@@ -7,6 +6,14 @@ return [
         'passwordHashing' => [
             'className' => 'TYPO3\\CMS\\Core\\Crypto\\PasswordHashing\\Argon2iPasswordHash',
             'options' => [],
+        ],
+    ],
+    'DB' => [
+        'Connections' => [
+            'Default' => [
+                'charset' => 'utf8',
+                'driver' => 'mysqli',
+            ],
         ],
     ],
     'EXTENSIONS' => [
@@ -32,6 +39,16 @@ return [
         ],
     ],
     'LOG' => [
+        'MyVendor' => [
+            'writerConfiguration' => [
+                'debug' => [
+                    'TYPO3\CMS\Core\Log\Writer\FileWriter' => [
+                        'disabled' => false,
+                        'logFile' => '/var/www/html/var/log/myvendor.log',
+                    ],
+                ],
+            ],
+        ],
         'TYPO3' => [
             'CMS' => [
                 'deprecations' => [
@@ -41,17 +58,6 @@ return [
                                 'disabled' => true,
                             ],
                         ],
-                    ],
-                ],
-            ],
-        ],
-        'MyVendor' => [
-            'writerConfiguration' => [
-                'debug' => [
-                    'TYPO3\CMS\Core\Log\Writer\FileWriter' => [
-                        'disabled' => false,
-                        'logFile' =>  Environment::getVarPath() . '/log/myvendor.log',
-
                     ],
                 ],
             ],
@@ -88,6 +94,7 @@ return [
         ],
         'devIPmask' => '',
         'displayErrors' => 0,
+        'encryptionKey' => '720685484c0ab3354de26dcaf0d25dc2e8f33c5e41f54d3f6fb97675a8fc7629aede4c46e932abbab2f11a075e2da639',
         'exceptionalErrors' => 4096,
         'features' => [
             'frontend.cache.autoTagging' => true,
