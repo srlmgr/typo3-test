@@ -9,4 +9,4 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['user']     = getenv
 $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'] = getenv('TYPO3_DB_PASSWORD') ?: '';
 
 // Encryption key — generate once per environment and store as TYPO3_ENCRYPTION_KEY
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = getenv('TYPO3_ENCRYPTION_KEY') ?: '';
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = getenv('TYPO3_ENCRYPTION_KEY') ?: ($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? '');

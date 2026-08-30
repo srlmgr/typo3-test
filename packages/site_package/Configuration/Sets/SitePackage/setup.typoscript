@@ -57,28 +57,29 @@ lib.content {
     }
 }
 
-tt_content.vrdb_fetcher = FLUIDTEMPLATE
+tt_content.vrdb_fetcher = COA_INT
 tt_content.vrdb_fetcher {
-    templateName = ExternalApp
-    templateRootPaths {
-        10 = EXT:site_package/Resources/Private/Templates/ContentObjects/
-    }
-    dataProcessing {
-        10 = MyVendor\SitePackage\DataProcessing\ExternalAppProcessor
-        10 {
-            endpoint.data = page:tx_sitepackage_external_endpoint
-            endpoint.ifEmpty = https://vrdb-http.ubtest3.homelab.mpapenbr.de
+    10 = FLUIDTEMPLATE
+    10 {
+        templateName = ExternalApp
+        templateRootPaths {
+            10 = EXT:site_package/Resources/Private/Templates/ContentObjects/
+        }
+        dataProcessing {
+            10 = MyVendor\SitePackage\DataProcessing\ExternalAppProcessor
+            10 {
+                endpoint.data = page:tx_sitepackage_external_endpoint
+                endpoint.ifEmpty = https://vrdb-http.ubtest3.homelab.mpapenbr.de
 
-            basePath.data = page:tx_sitepackage_external_base_path
-            basePath.ifEmpty = /vrdb
+                basePath.data = page:tx_sitepackage_external_base_path
+                basePath.ifEmpty = /vrdb
 
-            seasonID.data = page:tx_sitepackage_external_season_id
+                seasonID.data = page:tx_sitepackage_external_season_id
+            }
         }
     }
 }
 
-
-
-[traverse(page, "uid") in [7, 8, 10]]
+[page['backend_layout'] in ['pagets__vrdb', 'vrdb'] || page['backend_layout_next_level'] in ['pagets__vrdb', 'vrdb']]
     config.no_cache = 1
 [END]

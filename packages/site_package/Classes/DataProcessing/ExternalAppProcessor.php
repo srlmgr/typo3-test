@@ -16,11 +16,7 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
 
     private const MAX_REDIRECTS = 5;
     private const EXTERNAL_SNIPPET_PATH = '/vrdb/snippet';
-    private const PATH_SEASON_ID_MAP = [
-        '/vrpcdb' => 1,
-        '/vrgesdb' => 2,
-        '/sub1/wertung' => 1,
-    ];
+
 
     private readonly ClientInterface $client;
     private readonly RequestFactoryInterface $requestFactory;
@@ -64,9 +60,25 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
 
         $path = $parts['path'] ?? '/';
         $query = $parts['query'] ?? '';
-        $this->debug('Building external URL for path: ' . $path . ' and query: ' . $query . ' with ' . json_encode($processorConfiguration));
 
-        $basePath = (string) $cObj->stdWrapValue('basePath', $processorConfiguration, '/vrdb');
+        parse_str($query, $queryParameters);
+
+        $this->debug(sprintf(
+            'Incoming TYPO3 request: URI="%s", path="%s", query="%s", queryParameters=%s',
+            $requestUri ?: '/',
+            $path,
+            $query,
+            json_encode($queryParameters)
+        ));
+
+        $basePath = (string) $cObj->stdWrapValue('basePath', $processorConfiguration, '');
+        if ($basePath === '' && isset($cObj->data['tx_sitepackage_external_base_path'])) {
+            $basePath = (string) $cObj->data['tx_sitepackage_external_base_path'];
+        }
+        if ($basePath === '') {
+            $basePath = '/vrdb';
+        }
+
         $suffix = $path;
 
         if (str_starts_with($path, $basePath)) {
@@ -80,13 +92,13 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
         $url = $externalBase . self::EXTERNAL_SNIPPET_PATH;
 
         $seasonId = (string) $cObj->stdWrapValue('seasonID', $processorConfiguration, '');
+        if ($seasonId === '' && isset($cObj->data['tx_sitepackage_external_season_id'])) {
+            $seasonId = (string) $cObj->data['tx_sitepackage_external_season_id'];
+        }
 
-        parse_str($query, $queryParameters);
         if (!array_key_exists('seasonID', $queryParameters)) {
-            if ($seasonId !== '') {
+            if ($seasonId !== '' && $seasonId !== '0') {
                 $queryParameters['seasonID'] = $seasonId;
-            } elseif (array_key_exists($suffix, self::PATH_SEASON_ID_MAP)) {
-                $queryParameters['seasonID'] = self::PATH_SEASON_ID_MAP[$suffix];
             }
         }
 
@@ -95,11 +107,11 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
             $url .= '?' . $normalizedQuery;
         }
 
-        $this->debug('Resolved external URL ' . $url . ' with CMS base path header ' . $suffix);
+        $this->debug('Resolved external URL ' . $url . ' with CMS base path header ' . $basePath);
 
         return [
             'endpoint' => $url,
-            'cmsBasePath' => $suffix,
+            'cmsBasePath' => $basePath,
         ];
     }
 
