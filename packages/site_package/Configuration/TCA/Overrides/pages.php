@@ -12,7 +12,7 @@ $columns = [
             'size' => 50,
             'max' => 255,
             'eval' => 'trim',
-            'placeholder' => 'https://vrdb-http.ubtest3.homelab.mpapenbr.de',
+            'placeholder' => 'https://vrdb-http.mpapenbr.de',
         ],
     ],
     'tx_sitepackage_external_base_path' => [
@@ -22,7 +22,7 @@ $columns = [
             'size' => 20,
             'max' => 255,
             'eval' => 'trim',
-            'placeholder' => '/vrdb',
+            'placeholder' => '/vrpc',
         ],
     ],
     'tx_sitepackage_external_season_id' => [

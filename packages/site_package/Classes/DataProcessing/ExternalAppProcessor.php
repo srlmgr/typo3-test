@@ -51,23 +51,18 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
     private function buildExternalRequestConfiguration(ContentObjectRenderer $cObj, array $processorConfiguration): array
     {
         $externalBase = rtrim(
-            (string) $cObj->stdWrapValue('endpoint', $processorConfiguration, 'https://vrdb-http.ubtest3.homelab.mpapenbr.de'),
+            (string) $cObj->stdWrapValue('endpoint', $processorConfiguration, 'https://vrdb-http.mpapenbr.de'),
             '/'
         );
 
-        $requestUri = GeneralUtility::getIndpEnv('REQUEST_URI');
-        $parts = parse_url($requestUri ?: '/');
-
-        $path = $parts['path'] ?? '/';
-        $query = $parts['query'] ?? '';
-
-        parse_str($query, $queryParameters);
+        $typo3Request = $cObj->getRequest();
+        $queryParameters = $typo3Request->getQueryParams();
+        $path = $typo3Request->getUri()->getPath();
 
         $this->debug(sprintf(
-            'Incoming TYPO3 request: URI="%s", path="%s", query="%s", queryParameters=%s',
-            $requestUri ?: '/',
+            'Incoming TYPO3 request: URI="%s", path="%s", queryParameters=%s',
+            (string) $typo3Request->getUri(),
             $path,
-            $query,
             json_encode($queryParameters)
         ));
 
