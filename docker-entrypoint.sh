@@ -39,7 +39,9 @@ if [ "$INITIALIZED" = "no" ]; then
         --create-site="${TYPO3_SITE_URL:-http://localhost/}" \
         --force \
         --no-interaction
-    chown -R www-data:www-data /var/www/html/var
+    chown -R www-data:www-data /var/www/html/var /var/www/html/public/typo3temp
+    # typo3 setup rewrites config/sites/*/config.yaml and drops custom dependencies — restore from seed
+    cp -r /var/www/html/config/sites.seed/. /var/www/html/config/sites/
     echo "[entrypoint] TYPO3 setup complete."
 else
     echo "[entrypoint] DB check: ${INITIALIZED}"

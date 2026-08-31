@@ -1,0 +1,2 @@
+# Site-specific TypoScript overrides.
+# Intentionally empty — all page rendering is provided by the myvendor/site-package site set.

@@ -10,3 +10,9 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'] = getenv
 
 // Encryption key — generate once per environment and store as TYPO3_ENCRYPTION_KEY
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = getenv('TYPO3_ENCRYPTION_KEY') ?: ($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? '');
+
+// Log MyVendor classes at DEBUG level — survives typo3 setup rewrites
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['MyVendor']['writerConfiguration']['debug']['TYPO3\CMS\Core\Log\Writer\FileWriter'] = [
+    'disabled' => false,
+    'logFile'  => '/var/www/html/var/log/myvendor.log',
+];

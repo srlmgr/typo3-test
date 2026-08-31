@@ -1,6 +1,6 @@
 services:
   typo3:
-    image: my-typo3-site:latest
+    image: typo3-prod-local:test
     restart: unless-stopped
     ports:
       - "${TYPO3_PORT:-8080}:80"
