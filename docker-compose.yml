@@ -2,94 +2,87 @@ services:
   typo3:
     build:
       context: .
-      args:
-        PHP_IMAGE: ${PHP_IMAGE:-php:8.4-apache}
-        COMPOSER_IMAGE: ${COMPOSER_IMAGE:-composer:2}
+      dockerfile: Dockerfile
+    image: t3test
     restart: unless-stopped
     ports:
       - "${TYPO3_PORT:-8380}:80"
+    networks:
+      - appnet
     environment:
+      TYPO3_CONTEXT: Production
       TYPO3_DB_DRIVER: mysqli
-      TYPO3_DB_HOST: db
+      TYPO3_DB_HOST: mariadb
       TYPO3_DB_PORT: 3306
       TYPO3_DB_NAME: ${DB_NAME:-typo3}
       TYPO3_DB_USERNAME: ${DB_USER:-typo3}
-      TYPO3_DB_PASSWORD: ${DB_PASSWORD:-typo3pass}
-      TYPO3_SETUP_ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
-      TYPO3_SETUP_ADMIN_USERNAME: ${ADMIN_USER:-admin}
-      TYPO3_SETUP_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-      TYPO3_SITE_NAME: ${TYPO3_PROJECT_NAME:-My TYPO3 Site}
-      TYPO3_SETUP_CREATE_SITE: "true"
-      TYPO3_SERVER_TYPE: apache
-      TYPO3_ENCRYPTION_KEY: ${TYPO3_ENCRYPTION_KEY}
+      TYPO3_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      TYPO3_ENCRYPTION_KEY: ${TYPO3_ENCRYPTION_KEY:?TYPO3_ENCRYPTION_KEY is required}
+      TYPO3_SITE_URL: ${TYPO3_SITE_URL:?TYPO3_SITE_URL is required}
+    volumes:
+      - typo3-fileadmin:/var/www/html/public/fileadmin
+      - typo3-uploads:/var/www/html/public/uploads
+      - typo3-temp:/var/www/html/public/typo3temp
+      - typo3-system:/var/www/html/config/system
     depends_on:
-      db:
+      mariadb:
         condition: service_healthy
 
-  # One-time TYPO3 install: docker compose run --rm setup
-  # Installs into a temp dir first (composer requires an empty target), then moves files here.
-  setup:
-    build:
-      context: .
-      args:
-        PHP_IMAGE: ${PHP_IMAGE:-php:8.4-apache}
-        COMPOSER_IMAGE: ${COMPOSER_IMAGE:-composer:2}
+  typo3-init:
+    image: t3test
+    profiles:
+      - tools
+    networks:
+      - appnet
     environment:
-      HOST_UID: "${HOST_UID}"
-      HOST_GID: "${HOST_GID}"
+      TYPO3_CONTEXT: Production
+      TYPO3_DB_DRIVER: mysqli
+      TYPO3_DB_HOST: mariadb
+      TYPO3_DB_PORT: 3306
+      TYPO3_DB_NAME: ${DB_NAME:-typo3}
+      TYPO3_DB_USERNAME: ${DB_USER:-typo3}
+      TYPO3_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      TYPO3_ENCRYPTION_KEY: ${TYPO3_ENCRYPTION_KEY:?TYPO3_ENCRYPTION_KEY is required}
+      TYPO3_SETUP_ADMIN_USERNAME: ${ADMIN_USER:-admin}
+      TYPO3_SETUP_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
+      TYPO3_SETUP_ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      TYPO3_SITE_URL: ${TYPO3_SITE_URL:-http://localhost:8380/}
+      TYPO3_PROJECT_NAME: ${TYPO3_PROJECT_NAME:-my_project}
     volumes:
-      - .:/var/www/html
-      - ./setup.sh:/setup.sh:ro
-    entrypoint: ["/bin/sh", "/setup.sh"]
-    profiles: [tools]
+      - typo3-fileadmin:/var/www/html/public/fileadmin
+      - typo3-uploads:/var/www/html/public/uploads
+      - typo3-temp:/var/www/html/public/typo3temp
+      - typo3-system:/var/www/html/config/system
+    entrypoint: ["/usr/local/bin/docker-init-typo3.sh"]
+    depends_on:
+      mariadb:
+        condition: service_healthy
 
-  # General-purpose composer runner — run after initial setup
-  # Add an extension:  docker compose run --rm composer require vendor/extension
-  # TODO: add your site extensions here later:
-  #   docker compose run --rm composer require my-vendor/my-sitepackage
-  composer:
-    build:
-      context: .
-      args:
-        PHP_IMAGE: ${PHP_IMAGE:-php:8.4-apache}
-        COMPOSER_IMAGE: ${COMPOSER_IMAGE:-composer:2}
-    environment:
-      HOST_UID: "${HOST_UID}"
-      HOST_GID: "${HOST_GID}"
-    volumes:
-      - .:/var/www/html
-    entrypoint: composer
-    working_dir: /var/www/html
-    profiles: [tools]
-
-  db:
-    image: ${MARIADB_IMAGE:-mariadb:11}
+  mariadb:
+    image: mariadb:11.8
     restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
       MARIADB_DATABASE: ${DB_NAME:-typo3}
       MARIADB_USER: ${DB_USER:-typo3}
-      MARIADB_PASSWORD: ${DB_PASSWORD:-typo3pass}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
     volumes:
-      - db_data:/var/lib/mysql
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - appnet
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 30s
-
-  phpmyadmin:
-    image: phpmyadmin:latest
-    restart: unless-stopped
-    ports:
-      - "${PMA_PORT:-8081}:80"
-    environment:
-      PMA_HOST: db
-      PMA_USER: ${DB_USER:-typo3}
-      PMA_PASSWORD: ${DB_PASSWORD:-typo3pass}
-    depends_on:
-      - db
 
 volumes:
-  db_data:
+  mariadb-data:
+  typo3-system:
+  typo3-fileadmin:
+  typo3-uploads:
+  typo3-temp:
+
+networks:
+  appnet:
+    driver: bridge

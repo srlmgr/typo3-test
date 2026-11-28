@@ -7,5 +7,5 @@ nbproject
 /public/*
 !/public/.htaccess
 tmp
-.env
-.env.prod
+.env*
+

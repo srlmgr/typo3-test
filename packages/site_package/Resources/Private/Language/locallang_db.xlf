@@ -16,8 +16,8 @@
             <trans-unit id="pages.tx_sitepackage_external_base_path">
                 <source>External CMS base path</source>
             </trans-unit>
-            <trans-unit id="pages.tx_sitepackage_external_season_id">
-                <source>Season ID</source>
+            <trans-unit id="pages.tx_sitepackage_external_series_id">
+                <source>Series ID</source>
             </trans-unit>
         </body>
     </file>

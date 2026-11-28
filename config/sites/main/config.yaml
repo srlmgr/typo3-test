@@ -1,4 +1,5 @@
-base: "http://localhost:8380/"
+# Resolved at runtime from the container environment, so one image can serve any URL.
+base: '%env(TYPO3_SITE_URL)%'
 dependencies:
   - typo3/fluid-styled-content
   - typo3/fluid-styled-content-css

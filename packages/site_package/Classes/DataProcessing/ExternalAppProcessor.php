@@ -86,14 +86,14 @@ class ExternalAppProcessor implements DataProcessorInterface, LoggerAwareInterfa
 
         $url = $externalBase . self::EXTERNAL_SNIPPET_PATH;
 
-        $seasonId = (string) $cObj->stdWrapValue('seasonID', $processorConfiguration, '');
-        if ($seasonId === '' && isset($cObj->data['tx_sitepackage_external_season_id'])) {
-            $seasonId = (string) $cObj->data['tx_sitepackage_external_season_id'];
+        $seriesId = (string) $cObj->stdWrapValue('seriesID', $processorConfiguration, '');
+        if ($seriesId === '' && isset($cObj->data['tx_sitepackage_external_series_id'])) {
+            $seriesId = (string) $cObj->data['tx_sitepackage_external_series_id'];
         }
 
-        if (!array_key_exists('seasonID', $queryParameters)) {
-            if ($seasonId !== '' && $seasonId !== '0') {
-                $queryParameters['seasonID'] = $seasonId;
+        if (!array_key_exists('seriesID', $queryParameters)) {
+            if ($seriesId !== '' && $seriesId !== '0') {
+                $queryParameters['seriesID'] = $seriesId;
             }
         }
 

@@ -25,8 +25,8 @@ $columns = [
             'placeholder' => '/vrpc',
         ],
     ],
-    'tx_sitepackage_external_season_id' => [
-        'label' => 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:pages.tx_sitepackage_external_season_id',
+    'tx_sitepackage_external_series_id' => [
+        'label' => 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:pages.tx_sitepackage_external_series_id',
         'config' => [
             'type' => 'number',
             'size' => 10,
@@ -39,7 +39,7 @@ ExtensionManagementUtility::addTCAcolumns('pages', $columns);
 ExtensionManagementUtility::addFieldsToPalette(
     'pages',
     'external-app',
-    'tx_sitepackage_external_endpoint, tx_sitepackage_external_base_path, --linebreak--, tx_sitepackage_external_season_id'
+    'tx_sitepackage_external_endpoint, tx_sitepackage_external_base_path, --linebreak--, tx_sitepackage_external_series_id'
 );
 
 $GLOBALS['TCA']['pages']['palettes']['external-app']['label'] = 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:pages.palette.external_app';
