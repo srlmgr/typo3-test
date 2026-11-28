@@ -9,7 +9,20 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['user']     = getenv
 $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'] = getenv('TYPO3_DB_PASSWORD') ?: '';
 
 // Encryption key — generate once per environment and store as TYPO3_ENCRYPTION_KEY
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = getenv('TYPO3_ENCRYPTION_KEY') ?: ($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? '');
+$encryptionKey = getenv('TYPO3_ENCRYPTION_KEY');
+
+if ($encryptionKey === false || $encryptionKey === '') {
+    throw new RuntimeException('TYPO3_ENCRYPTION_KEY is required');
+}
+
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $encryptionKey;
+
+// Site base URL — consumed by config/sites/main/config.yaml via %env(TYPO3_SITE_URL)%
+$siteUrl = getenv('TYPO3_SITE_URL');
+
+if ($siteUrl === false || $siteUrl === '') {
+    throw new RuntimeException('TYPO3_SITE_URL is required (e.g. https://www.example.com/)');
+}
 
 // cacheHash — survives typo3 setup rewrites
 // Without this, TYPO3 returns 404 for URLs with query params that lack a cHash token.

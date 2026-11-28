@@ -1,8 +1,12 @@
 .git
-.env
-.env.example.env.prod
+.github
+.dockerignore
+.gitignore
+.env*
 docker-compose*.yml
 *.md
+setup.sh
+Dockerfile
 var/
 public/fileadmin/
 public/uploads/
