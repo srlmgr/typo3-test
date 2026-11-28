@@ -1,5 +1,5 @@
 
-ARG PHP_IMAGE=php:8.4.25-apache
+ARG PHP_IMAGE=php:8.4.28-apache
 ARG COMPOSER_IMAGE=composer:2
 
 FROM ${COMPOSER_IMAGE} AS composer-bin
